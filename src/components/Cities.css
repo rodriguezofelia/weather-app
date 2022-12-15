@@ -1,0 +1,23 @@
+.container {
+  padding-bottom: 32px;
+}
+.header-section {
+  font-weight: bold;
+}
+.header-section,
+.city-section {
+  display: flex;
+  align-content: center;
+  width: 80%;
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.info {
+  flex: 1;
+  border: 2px solid black;
+  width: 80%;
+  max-width: 1000px;
+  align-content: center;
+  padding: 10px;
+}
