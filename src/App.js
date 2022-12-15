@@ -6,7 +6,7 @@ import RenderCityData from "./components/Cities";
 export default function App() {
   return (
     <div className="App">
-      {/* <UserWeather /> */}
+      <UserWeather />
       <div>
         <h1 className="cities"> Beach Cities</h1>
         <p>

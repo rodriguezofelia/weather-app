@@ -6,37 +6,39 @@ const UserWeather = () => {
   const [long, setLong] = useState([]);
   const [data, setData] = useState([]);
 
-  // useEffect(() => {
-  //   navigator.geolocation.getCurrentPosition(function (position) {
-  //     setLat(position.coords.latitude);
-  //     setLong(position.coords.longitude);
-  //   });
-  // }, [lat, long]);
-
   useEffect(() => {
-    const fetchData = async () => {
-      // navigator.geolocation.getCurrentPosition(function (position) {
-      //   setLat(position.coords.latitude);
-      //   setLong(position.coords.longitude);
-      // });
-
+    const fetchCurrentWeatherData = async () => {
       const response = await fetch(
         `${WEATHER_APP_API_URL}?lat=${lat}&lon=${long}&units=imperial&appid=${WEATHER_APP_API_KEY}`
       );
       const data = await response.json();
+      // store current weather obj to state variable
       setData(data);
       console.log(data, "data");
     };
-    fetchData();
+    if (lat && long) {
+      fetchCurrentWeatherData();
+    }
   }, [lat, long]);
 
-  // console.log(data, "data");
-  // console.log(data.current, "this works");
+  useEffect(() => {
+    const getUserCoordinates = async () => {
+      navigator.geolocation.getCurrentPosition(function (position) {
+        // set lat, long coordinates to state variables
+        setLat(position.coords.latitude);
+        setLong(position.coords.longitude);
+      });
+    };
+    getUserCoordinates();
+  }, []);
+
   return (
-    <div>
-      <h1 className="temperature">
-        Current Temperature:{JSON.stringify(data.current.temp)}
-      </h1>
+    <div className="user-container">
+      {data.current && (
+        <h1 className="user-temp">
+          Current Temperature: {Math.trunc(data.current.temp)}°
+        </h1>
+      )}
     </div>
   );
 };
