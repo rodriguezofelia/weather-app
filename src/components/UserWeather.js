@@ -1,47 +1,44 @@
-import { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { WEATHER_APP_API_KEY, WEATHER_APP_API_URL } from "../api";
-import { createRoot } from "react-dom/client";
 
 const UserWeather = () => {
-  // get user location data
-  const options = {
-    enableHighAccuracy: true,
-    timeout: 5000,
-    maximumAge: 0,
-  };
+  const [lat, setLat] = useState([]);
+  const [long, setLong] = useState([]);
+  const [data, setData] = useState([]);
 
-  const getGeoLocation = (pos) => {
-    console.log("Your current position is:");
-    console.log(`Latitude : ${pos.coords.latitude}`);
-    console.log(`Longitude: ${pos.coords.longitude}`);
-    console.log(`More or less ${pos.coords.accuracy} meters.`);
-    const userLat = pos.coords.latitude;
-    const userLng = pos.coords.longitude;
-
-    fetch(
-      `${WEATHER_APP_API_URL}?lat=${userLat}&lon=${userLng}&units=imperial&appid=${WEATHER_APP_API_KEY}`
-    )
-      .then((response) => {
-        return response.json();
-      })
-      .then((data) => {
-        console.log(data);
-      });
-  };
-
-  const errorMessage = (err) => {
-    console.warn(`ERROR(${err.code}): ${err.message}`);
-  };
+  // useEffect(() => {
+  //   navigator.geolocation.getCurrentPosition(function (position) {
+  //     setLat(position.coords.latitude);
+  //     setLong(position.coords.longitude);
+  //   });
+  // }, [lat, long]);
 
   useEffect(() => {
-    navigator.geolocation.getCurrentPosition(
-      getGeoLocation,
-      errorMessage,
-      options
-    );
-  }, []);
+    const fetchData = async () => {
+      // navigator.geolocation.getCurrentPosition(function (position) {
+      //   setLat(position.coords.latitude);
+      //   setLong(position.coords.longitude);
+      // });
+
+      const response = await fetch(
+        `${WEATHER_APP_API_URL}?lat=${lat}&lon=${long}&units=imperial&appid=${WEATHER_APP_API_KEY}`
+      );
+      const data = await response.json();
+      setData(data);
+      console.log(data, "data");
+    };
+    fetchData();
+  }, [lat, long]);
+
+  // console.log(data, "data");
+  // console.log(data.current, "this works");
+  return (
+    <div>
+      <h1 className="temperature">
+        Current Temperature:{JSON.stringify(data.current.temp)}
+      </h1>
+    </div>
+  );
 };
-const root = createRoot(document.getElementById("root"));
-root.render(<UserWeather />);
 
 export default UserWeather;
