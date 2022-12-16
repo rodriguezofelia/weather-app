@@ -9,7 +9,7 @@ const RenderCityData = (props) => {
 
   useEffect(() => {
     const getWeather = async () => {
-      let returned_weather_data = [];
+      let returnedWeatherData = [];
       const getData = async (cityData) => {
         let currentWeatherData = await fetchWeatherData(
           cityData.lat,
@@ -19,9 +19,9 @@ const RenderCityData = (props) => {
           if (
             currentWeatherData.current.temp >= 70 &&
             currentWeatherData.current.wind_speed < 20 &&
-            currentWeatherData.current.clouds > 0
+            currentWeatherData.current.clouds <= 0
           ) {
-            returned_weather_data.push({
+            returnedWeatherData.push({
               name: cityData.name,
               currentTemp: currentWeatherData.current.temp,
               windSpeed: currentWeatherData.current.wind_speed,
@@ -29,15 +29,15 @@ const RenderCityData = (props) => {
               location: "beach",
             });
           } else {
-            returned_weather_data.push({
+            returnedWeatherData.push({
               name: cityData.name,
               currentTemp: currentWeatherData.current.temp,
               windSpeed: currentWeatherData.current.wind_speed,
               hasClouds: currentWeatherData.current.clouds,
               alerts: currentWeatherData.alerts || "",
               // COME BACK FIX DISQUALIFYING REASONS
-              disqualifyReason: `Reason(s) for disqualification: ${
-                currentWeatherData.current.temp ||
+              disqualifyReason: `Reason(s) for disqualification:  ${
+                Math.trunc(currentWeatherData.current.temp) ||
                 currentWeatherData.windSpeed ||
                 !!currentWeatherData.hasClouds ||
                 currentWeatherData.alerts
@@ -46,19 +46,20 @@ const RenderCityData = (props) => {
           }
         } else if (props.locationType === "skiCities") {
           if (currentWeatherData.current.temp < 50) {
-            returned_weather_data.push({
+            returnedWeatherData.push({
               name: cityData.name,
               currentTemp: currentWeatherData.current.temp,
               location: "ski",
             });
           } else {
-            returned_weather_data.push({
+            returnedWeatherData.push({
               name: cityData.name,
               currentTemp: currentWeatherData.current.temp,
               alerts: currentWeatherData.alerts || "",
               // COME BACK FIX DISQUALIFYING REASONS
               disqualifyReason: `Reason(s) for disqualification: ${
-                currentWeatherData.current.temp || currentWeatherData.alerts
+                Math.trunc(currentWeatherData.current.temp) ||
+                currentWeatherData.alerts
               } `,
             });
           }
@@ -68,7 +69,7 @@ const RenderCityData = (props) => {
       const promises = data[locationType].map((city) => getData(city));
       await Promise.all(promises);
       setLoading(false);
-      setWeatherData(returned_weather_data);
+      setWeatherData(returnedWeatherData);
     };
     getWeather();
   }, []);
