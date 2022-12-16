@@ -5,9 +5,11 @@
 .container {
   padding-bottom: 32px;
 }
+
 .header-section {
   font-weight: bold;
 }
+
 .header-section,
 .city-section {
   display: flex;
